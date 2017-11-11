@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <stdlib.h>
+#include <stdio.h>
 #include "SPA.h"
 #include "params.h"
 #include <unordered_map>
@@ -126,11 +128,15 @@ public:
     void get_top_k(uint16_t k, pkt * result) {
         Node * idx = nodes[0].next;
 
-        for (int i = 0; i < k; ++i) {
+        FILE * fileres = fopen("file_ss.txt", "a");
+        for (int i = 0; i < k; ++i) 
+        {
             result[i] = idx->key;
+            fprintf(fileres, "%u\n", idx->key.sip);
             // printf("%d\t", idx->val);
             idx = idx->next;
         }
+        fprintf(fileres, "*************end*************");
         return;
     }
 };

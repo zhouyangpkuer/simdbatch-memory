@@ -34,6 +34,8 @@ private:
 	SPA * spa;
 
 public:
+	int update_num;
+
 	SC(int _bucket_num, int _counter_num);
 
 	~SC();
@@ -50,6 +52,8 @@ public:
 
 SC::SC(int _bucket_num, int _counter_num)
 {
+	update_num = 0;
+
 	//init the buckets
 	bucket_num = _bucket_num;
 	counter_num = _counter_num;
@@ -228,6 +232,7 @@ void SC::Insert(pkt pkt_t, int f)
 }
 void SC::Insert_SC_SPA(pkt pkt_t, int kick_f)
 {
+	update_num ++;
 	spa->Insert(pkt_t, kick_f);
 }
 void SC::refresh()

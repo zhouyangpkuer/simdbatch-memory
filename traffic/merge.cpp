@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
 	FILE * file_tcp = fopen("./traffic_tcp.csv", "r");
 	FILE * file_udp = fopen("./traffic_udp.csv", "r");
 
-	FILE * file_merge = fopen("./traffic_merge.csv", "w");
+	FILE * file_merge = fopen("./traffic_sender.dat", "w");
 
 	char temp[210];
 	char buf1[210];
@@ -66,9 +66,6 @@ int main(int argc, char ** argv)
 	// will not read the '\n' !!!
 	{
 
-		// printf("%s\n", buf1);
-		// printf("%s\n", buf2);
-
 		vector<string> sep1 = split(string(buf1), ',');
 		vector<string> sep2 = split(string(buf2), ',');
 
@@ -84,6 +81,7 @@ int main(int argc, char ** argv)
 
 		strcpy(temp, sep1[0].c_str());
 		uint sip1 = ipTint(temp);
+
 		strcpy(temp, sep1[1].c_str());
 		uint dip1 = ipTint(temp);
 		uint sport1 = atoi(sep1[2].c_str());
@@ -105,12 +103,12 @@ int main(int argc, char ** argv)
 			continue;
 		}
 
-		if(type1 == 6 && (sep1[2].length() == 0 || sep1[3].length() == 0))
+		if(type1 == 6 && (sport1 == 0 || dport1 == 0))
 		{
 			continue;
 		}
 
-		if(type1 == 17 && (sep2[2].length() == 0 || sep2[3].length() == 0))
+		if(type1 == 17 && (sport2 == 0 || dport2 == 0))
 		{
 			continue;
 		}
@@ -123,12 +121,15 @@ int main(int argc, char ** argv)
 
 
 
-		fprintf(file_merge, "%u,%u,%hu,%hu,%hu\n", sip1, dip1, (unsigned short)sport1, (unsigned short)dport1, (unsigned short)type1);
 
-		packet_num ++; 
+
+
+
+		fprintf(file_merge, "%u\t%u\t%u\t%u\t%u\n", sip1, dip1, sport1, dport1, type1);
+		packet_num ++;
 		if(packet_num % 1000000 == 0)
 		{
-			printf("%dM packets,%u,%u,%hu,%hu,%hu\n", packet_num / 1000000, sip1, dip1, (unsigned short)sport1, (unsigned short)dport1, (unsigned short)type1);
+			printf("%dM packets,%u,%u,%u,%hu,%hu\n", packet_num / 1000000, sip1, dip1, (unsigned short)sport1, (unsigned short)dport1, (unsigned short)type1);
 		}
 	}
 

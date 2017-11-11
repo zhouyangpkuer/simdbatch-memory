@@ -131,6 +131,10 @@ int main(int argc, char** argv)
 #ifdef SIP_DIP_PKT
         insert[package_num].sip = sip;
         insert[package_num].dip = dip;
+        if(sip == 0 || dip == 0 || sip == 0xFFFFFFFF || dip == 0xFFFFFFFF)
+        {
+            printf("happens!!!\n");
+        }
 #endif
 
 
@@ -172,6 +176,14 @@ int main(int argc, char** argv)
     }
     printf("max_freq = %d\n", max_freq);
 
+    vector<pair<int, pkt>> vtMap;
+    for (it = mp.begin(); it != mp.end(); it++)
+        vtMap.push_back(make_pair(it->second, it->first));
+
+    sort(vtMap.begin(), vtMap.end(), 
+        [](const pair<int, pkt> &x, const pair<int, pkt> &y) -> int {
+        return x.first > y.first;
+    });
 
 
 
@@ -181,7 +193,12 @@ int main(int argc, char** argv)
 
     double memory = 1.0;
     int d = 4;
-    int bucket_num = 1600;
+    int bucket_num = 2000;
+    if(argc == 2)
+    {
+        bucket_num = atoi(argv[1]);
+    }
+
     int counter_num = 16;
     double M_SIMD = bucket_num * counter_num * 8.0 / (1024 * 1024);
     printf("M_SIMD = %lf\n", M_SIMD);
@@ -217,6 +234,8 @@ int main(int argc, char** argv)
     resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
     throughput = (double)1000.0 * TESTCYCLES * package_num / resns;
     printf("throughput of CM (insert): %.6lf\n", throughput);
+    printf("update_num of CM (insert): %d\n", (int)MAX_INSERT_PACKAGE);
+
     
 
 
@@ -237,7 +256,11 @@ int main(int argc, char** argv)
     resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
     throughput = (double)1000.0 * TESTCYCLES * package_num / resns;
     printf("throughput of CM_SC (insert): %.6lf\n", throughput);
-    
+    printf("update_num of CM_SC (insert): %d\n", sc->update_num);
+
+    printf("update percentage = %.6lf\n", sc->update_num * 1.0 / MAX_INSERT_PACKAGE);
+    printf("ideal percentage = %.6lf\n", mp.size() * 1.0 / MAX_INSERT_PACKAGE);
+
 #endif //CM
 
 
@@ -290,7 +313,7 @@ int main(int argc, char** argv)
 
     SpaceSaving *ss = NULL;
     SpaceSaving *ss_sc = NULL;
-    int K = 1024;
+    int K = 128;
 
 
     clock_gettime(CLOCK_MONOTONIC, &time1);
@@ -331,10 +354,35 @@ int main(int argc, char** argv)
     throughput = (double)1000.0 * TESTCYCLES * package_num / resns;
     printf("throughput of SS_SC (insert): %.6lf\n", throughput);
 
-    // pkt * result = new pkt[K / 100];
-    // ss->get_top_k(K / 100, result);
-    // ss_sc->get_top_k(K / 100, result);
+    int cor_cnt = 0;
+    pkt * result = new pkt[K];
+    ss->get_top_k(K, result);
+    for(int i = 0; i < K; i++)
+    {
+        for(int j = 0; j < K; j++)
+        {
+            if(vtMap[j].second == result[i])
+            {
+                cor_cnt++;
+                break;
+            }
+        }
+    }
+    printf("%d/%d\n", cor_cnt, K);
 
+    ss_sc->get_top_k(K, result);
+    for(int i = 0; i < K; i++)
+    {
+        for(int j = 0; j < K; j++)
+        {
+            if(vtMap[j].second == result[i])
+            {
+                cor_cnt++;
+                break;
+            }
+        }
+    }
+    printf("%d/%d\n", cor_cnt, K);
 
     
 #endif //SS

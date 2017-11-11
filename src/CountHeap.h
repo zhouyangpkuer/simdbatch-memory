@@ -96,7 +96,7 @@ public:
 
         uint32_t tmin;
         if (d % 2 == 0) {
-            tmin = (ans[d / 2] + ans[d / 2] - 1) / 2;
+            tmin = (ans[d / 2] + ans[d / 2 - 1]) / 2;
         } else {
             tmin = ans[d / 2];
         }

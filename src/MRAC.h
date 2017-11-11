@@ -32,7 +32,7 @@ MRAC::MRAC(double memory, int _r)
 	m = memory * 1024 * 1024 * 8.0 / (32 * (r + 1));
 	M = m << r;
 
-	MR = new int[m * (r + 1)]; // transforming m << r memory to m * r;
+	MR = new int[m * (r + 1)]; // transforming m << r memory to m * (r + 1);
 	memset(MR, 0, sizeof(int) * m * (r + 1));
 
 	fence = new int[r + 2];

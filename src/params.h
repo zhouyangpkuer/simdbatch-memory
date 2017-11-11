@@ -3,7 +3,11 @@
 
 
 
-#define MAX_INSERT_PACKAGE 2000000
+// #define MAX_INSERT_PACKAGE 2000000
+#define MAX_INSERT_PACKAGE 2 * 1024 * 1024
+
+// #define MAX_INSERT_PACKAGE (14 * 2 * 1024 * 1024)
+
 #define MAX_HASH_NUM 10
 
 typedef long long lint;
@@ -14,8 +18,8 @@ typedef unsigned short usi;
 
 // #define CMS
 // #define FR
-// #define SS
-#define FM
+#define SS
+// #define FM
 // #define UNIV
 // #define REV
 // #define MRAC_DIS
@@ -27,9 +31,9 @@ typedef unsigned short usi;
 #define GRR
 
 
-// #define SIP_PKT;
+#define SIP_PKT;
 // #define DIP_PKT;
-#define SIP_DIP_PKT;
+// #define SIP_DIP_PKT;
 // #define FOUR_TUPLE_PKT;
 // #define FIVE_TUPLE_PKT;
 

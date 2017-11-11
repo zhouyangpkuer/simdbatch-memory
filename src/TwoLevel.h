@@ -80,7 +80,7 @@ void TwoLevel::SetBit(bitmap *bitmaps, int bitmap_index, pkt pkt_t)
 	int a = index_in_bitmap / 32;
 	int b = index_in_bitmap % 32;
 
-	bitmaps[bitmap_index].cell[a] |= 1 << b;
+	bitmaps[bitmap_index].cell[a] |= (1 << b);
 }
 
 uint TwoLevel::RevHash(pkt pkt_t, int k)
